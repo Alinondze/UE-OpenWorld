@@ -43,12 +43,12 @@ protected:
 	 UPROPERTY(VisibleAnywhere)
 	 USkeletalMeshComponent* BirdMesh;
 
-	 UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	 UPROPERTY(VisibleAnywhere)
 	 USpringArmComponent* SpringArm;
 
-	 UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	 UPROPERTY(VisibleAnywhere)
 	 UCameraComponent* ViewCamera;
 
-	 UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	 UPROPERTY(VisibleAnywhere)
 	 UFloatingPawnMovement* MovementComponent;
 };
