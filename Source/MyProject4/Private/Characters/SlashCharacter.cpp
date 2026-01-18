@@ -1,7 +1,8 @@
-
+#include "Characters/SlashCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Characters/SlashCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GroomComponent.h"
 
 
 ASlashCharacter::ASlashCharacter()
@@ -9,14 +10,28 @@ ASlashCharacter::ASlashCharacter()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false; 
+	bUseControllerRotationRoll = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->TargetArmLength = 300.f;
+	SpringArm->bUsePawnControlRotation = true;
 
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(SpringArm);
+	ViewCamera->bUsePawnControlRotation = false;
+
+	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
+	Hair->SetupAttachment(GetMesh());
+	Hair->AttachmentName = FString("head");
+
+	Eyebrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eyebrows"));
+	Eyebrows ->SetupAttachment(GetMesh());
+	Eyebrows->AttachmentName = FString("head");
 }
 
 
@@ -47,21 +62,32 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  void ASlashCharacter::MoveForward(float Value)
 {
-	 if (Controller != nullptr && (Value != 0))
+	 if (Controller  && (Value != 0.f))
 	 {
-		 FVector Forward = GetActorForwardVector();
-		 AddMovementInput(Forward, Value);
+		 //find out which way is forward
+		const FRotator ControlRotation=  GetControlRotation();
+		const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, Value);
      }
 
 }
 
  void ASlashCharacter::MoveRight(float Value)
  {
-	 if (Controller != nullptr && (Value != 0))
+	  if (Controller  && (Value != 0.f))
 	 {
-		 FVector Right = GetActorForwardVector();
-		 AddMovementInput(Right, Value);
+		//find out which way is right
+		 const FRotator ControlRotation = GetControlRotation();
+	     const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+
+	     const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		 AddMovementInput(Direction, Value);
 	 }
+	
+
+	 
  }
 
  void ASlashCharacter::Turn(float Value)

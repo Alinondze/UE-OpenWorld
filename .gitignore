@@ -18,10 +18,8 @@ Saved/
 *.xcworkspace
 *.idea/
 
-# Unreal Engine specific
+# Unreal Engine logs and temp files
 *.log
-*.opensdf
-*.sdf
 *.tlog
 *.pdb
 *.idb
@@ -31,6 +29,13 @@ Saved/
 # Mac-specific
 .DS_Store
 
-# Ignore temporary content from plugins (optional)
+# Content and assets (UE)
+Content/*        
+!Content/Blueprints/  
+
+# Plugins temp files
 Plugins/*/Intermediate/
 Plugins/*/Saved/
+
+# Optional: ignore generated config
+*.ini
