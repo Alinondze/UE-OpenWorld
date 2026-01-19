@@ -6,9 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "SlashAnimInstance.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class MYPROJECT4_API USlashAnimInstance : public UAnimInstance
 {
