@@ -13,17 +13,18 @@ ASlashCharacter::ASlashCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false; 
 	bUseControllerRotationRoll = false;
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetRootComponent());
 	SpringArm->TargetArmLength = 300.f;
-	SpringArm->bUsePawnControlRotation = true;
+	
 
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(SpringArm);
-	ViewCamera->bUsePawnControlRotation = false;
+	
 
 	Hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
 	Hair->SetupAttachment(GetMesh());
@@ -57,6 +58,8 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &ASlashCharacter::Turn);
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
 	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASlashCharacter::MoveRight);
+
+	PlaerinputComponent->BindAxis(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 
 }
 
