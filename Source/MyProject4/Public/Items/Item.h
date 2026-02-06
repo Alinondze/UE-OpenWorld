@@ -6,6 +6,7 @@
 #include "Item.generated.h"
 
 class USphereComponent;
+class UStaticMeshComponent;
 UCLASS()
 class MYPROJECT4_API AItem : public AActor
 {
@@ -20,10 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponet,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponet,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
@@ -37,5 +38,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ItemMesh;
 
 };
