@@ -58,15 +58,23 @@ void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 }
 
+void AItem::HandleIdleMovement(float DeltaTime)
+{
+	RunningTime += DeltaTime;
+
+	float DeltaZ = Amplitude * FMath::Sin(RunningTime * TimeConstant);
+
+	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
+}
+
 
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsPickedUp) return;
 
-	RunningTime += DeltaTime;
+	HandleIdleMovement(DeltaTime);
+	
 
-	float DeltaZ = Amplitude* FMath::Sin(RunningTime * TimeConstant);
-
-	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
 }
 

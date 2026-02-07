@@ -9,6 +9,11 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* O
 	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
 	if (SlashCharacter)
 	{
+		bIsPickedUp = true;
+
+		SetActorTickEnabled(false);
+
+
 		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 		ItemMesh->AttachToComponent(SlashCharacter->GetMesh(), TransformRules, FName("RightHandSocket"));
 	}

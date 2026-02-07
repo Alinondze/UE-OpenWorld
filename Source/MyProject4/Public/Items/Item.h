@@ -26,8 +26,13 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void HandleIdleMovement(float DeltaTime);
+
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
+
+	bool bIsPickedUp = false;
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
@@ -37,6 +42,8 @@ private:
 	float RunningTime = 0.f;
 	float Amplitude=0.25f;
 	float TimeConstant = 5.f;
+
+	
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
