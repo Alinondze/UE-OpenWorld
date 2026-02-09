@@ -3,7 +3,7 @@
 
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
-
+#include "Characters/SlashCharacter.h"
 AItem::AItem()
 {
 
@@ -33,29 +33,31 @@ void AItem::BeginPlay()
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
-	{
-		const FString OtherActorName = OtherActor->GetName();
-		if (GEngine)
+	
+		
+		ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+		//HandleIdleMovement doesn`t work (fix it)
+		if (SlashCharacter)
 		{
-			GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+			bIsPickedUp = true; 
+
+			SetActorTickEnabled(false);
+
+			SlashCharacter->SetOverlappingItem(this); 
 		}
-	}
+	
 
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
-	if (OtherActor)
+	
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	if (SlashCharacter)
 	{
-		const FString OtherActorName = OtherActor->GetName();
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
-		}
+		SlashCharacter->SetOverlappingItem(nullptr);
 	}
-
+	
 }
 
 void AItem::HandleIdleMovement(float DeltaTime)

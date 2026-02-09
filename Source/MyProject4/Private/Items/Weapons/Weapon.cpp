@@ -3,20 +3,19 @@
 
 #include "Items/Weapons/Weapon.h"
 #include "Characters/SlashCharacter.h"
+
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+{
+	
+		
+		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+		ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+	
+}
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnSphereOverlap(OverlappedComponet, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
-	if (SlashCharacter)
-	{
-		bIsPickedUp = true;
-
-		SetActorTickEnabled(false);
-
-
-		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		ItemMesh->AttachToComponent(SlashCharacter->GetMesh(), TransformRules, FName("RightHandSocket"));
-	}
+	
 	
 }
 

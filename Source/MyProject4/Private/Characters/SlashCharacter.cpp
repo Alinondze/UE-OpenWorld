@@ -4,7 +4,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GroomComponent.h"
-
+#include"Items/Item.h"
+#include "Items/Weapons/Weapon.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -62,7 +63,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASlashCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-
+	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 }
 
  void ASlashCharacter::MoveForward(float Value)
@@ -105,5 +106,15 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
  {
 	 AddControllerPitchInput(Value);
 
+ }
+
+ void ASlashCharacter::EKeyPressed()
+ {
+	 AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+	 if (OverlappingWeapon)
+	 {
+		 OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		 CharacterState = EcharacterState::ECS_EquippedOneHandedWeapon;
+	 }
  }
 
