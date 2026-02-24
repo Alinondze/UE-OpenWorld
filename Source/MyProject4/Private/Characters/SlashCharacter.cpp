@@ -6,6 +6,7 @@
 #include "GroomComponent.h"
 #include"Items/Item.h"
 #include "Items/Weapons/Weapon.h"
+#include "Animation/AnimMontage.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -64,6 +65,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ASlashCharacter::EKeyPressed);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
  void ASlashCharacter::MoveForward(float Value)
@@ -114,7 +116,39 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	 if (OverlappingWeapon)
 	 {
 		 OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
-		 CharacterState = EcharacterState::ECS_EquippedOneHandedWeapon;
+		 CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
 	 }
  }
 
+ void ASlashCharacter::Attack()
+ {
+	 if (ActionState == EActionState::EAS_Unoccupied)
+	 {
+		 ActionState = EActionState::EAS_Attacking;
+		 PlayAttackMontage();
+		 
+	 }
+ }
+
+ void ASlashCharacter::PlayAttackMontage()
+ {
+	 UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	 if (AnimInstance && AttackMontage)
+	 {
+		 AnimInstance->Montage_Play(AttackMontage);
+		 const int32 Selection = FMath::RandRange(0, 1);
+		 FName SectionName = FName();
+		 switch (Selection)
+		 {
+		 case 0:
+			 SectionName = FName("Attack1");
+			 break;
+		 case 1:
+			 SectionName = FName("Attack2");
+			 break;
+		 default:
+			 break;
+		 }
+		 AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	 }
+ }
