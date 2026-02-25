@@ -70,6 +70,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  void ASlashCharacter::MoveForward(float Value)
 {
+	 if (ActionState == EActionState::EAS_Attacking) return;
 	 if (Controller  && (Value != 0.f))
 	 {
 		 //find out which way is forward
@@ -84,6 +85,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  void ASlashCharacter::MoveRight(float Value)
  {
+	 if (ActionState == EActionState::EAS_Attacking) return;
 	  if (Controller  && (Value != 0.f))
 	 {
 		//find out which way is right
@@ -122,12 +124,22 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  void ASlashCharacter::Attack()
  {
-	 if (ActionState == EActionState::EAS_Unoccupied)
+
+	 
+	 if (CanAttack())
 	 {
 		 ActionState = EActionState::EAS_Attacking;
 		 PlayAttackMontage();
 		 
 	 }
+ }
+
+ bool ASlashCharacter::CanAttack()
+ {
+
+	 return ActionState == EActionState::EAS_Unoccupied &&
+		 CharacterState != ECharacterState::ECS_Unequipped;
+
  }
 
  void ASlashCharacter::PlayAttackMontage()
@@ -152,3 +164,10 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		 AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	 }
  }
+
+ void ASlashCharacter::AttackEnd()
+ {
+	 ActionState = EActionState::EAS_Unoccupied;
+ }
+
+
