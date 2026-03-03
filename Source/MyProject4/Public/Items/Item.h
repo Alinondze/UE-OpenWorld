@@ -7,6 +7,13 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
+
+
+enum class EItemState : uint8
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
 UCLASS()
 class MYPROJECT4_API AItem : public AActor
 {
@@ -32,7 +39,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
 
-	bool bIsPickedUp = false;
+	EItemState ItemState =EItemState::EIS_Hovering;
+	
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
@@ -40,14 +48,10 @@ public:
 private:
 
 	float RunningTime = 0.f;
-	float Amplitude=0.25f;
+	float Amplitude=0.5f;
 	float TimeConstant = 5.f;
-
 	
-
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
-
-	
 
 };

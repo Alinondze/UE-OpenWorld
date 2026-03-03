@@ -6,15 +6,14 @@
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class MYPROJECT4_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 public:
 	void Equip(USceneComponent* InParent,FName InSocketName);
+	void AttachMeshToSocket(USceneComponent* InParent, const  FName& InSocketName);
 protected:
 	
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

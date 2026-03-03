@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Items/Weapons/Weapon.h"
@@ -6,17 +5,21 @@
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
-	
-		
-		FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-		ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
-	
+
+   AttachMeshToSocket(InParent, InSocketName);
+   ItemState = EItemState::EIS_Equipped;
+
 }
+
+void AWeapon::AttachMeshToSocket(USceneComponent* InParent,const  FName& InSocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
+}
+
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnSphereOverlap(OverlappedComponet, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
-	
 }
 
 void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

@@ -9,16 +9,11 @@ AItem::AItem()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	
-
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	RootComponent = ItemMesh;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
-
-	
-
 
 }
 
@@ -29,6 +24,7 @@ void AItem::BeginPlay()
 	
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
 	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
+
 }
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -36,13 +32,10 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* Oth
 	
 		
 		ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
-		//HandleIdleMovement doesn`t work (fix it)
+		
 		if (SlashCharacter)
 		{
-			bIsPickedUp = true; 
-
-			SetActorTickEnabled(false);
-
+			
 			SlashCharacter->SetOverlappingItem(this); 
 		}
 	
@@ -73,10 +66,10 @@ void AItem::HandleIdleMovement(float DeltaTime)
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsPickedUp) return;
-
-	HandleIdleMovement(DeltaTime);
-	
+	if (ItemState == EItemState::EIS_Hovering)
+	{
+		HandleIdleMovement(DeltaTime);
+	}
 
 }
 
