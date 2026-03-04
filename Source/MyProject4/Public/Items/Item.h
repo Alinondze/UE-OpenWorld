@@ -40,6 +40,9 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	EItemState ItemState =EItemState::EIS_Hovering;
+
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;
 	
 public:	
 	
@@ -51,7 +54,6 @@ private:
 	float Amplitude=0.5f;
 	float TimeConstant = 5.f;
 	
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere;
+	
 
 };
