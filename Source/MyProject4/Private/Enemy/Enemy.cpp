@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "Kismet/GameplayStatics.h"
 
 AEnemy::AEnemy()
 {
@@ -58,20 +58,38 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		DrawDebugSphere(
-			World,             // світ
-			ImpactPoint,          // центр сфери
-			10.f,              // радіус
-			24,                // сегменти (int32!)
-			FColor::Red,       // колір
-			false,             // persistent lines?
-			5.f               // тривалість
-		);
+		//DrawDebugSphere(
+			//World,             // світ
+		//	ImpactPoint,          // центр сфери
+			//10.f,              // радіус
+		//	24,                // сегменти (int32!)
+		//	FColor::Red,       // колір
+		//	false,             // persistent lines?
+		//	5.f               // тривалість
+		//);
+
 	}
 
 
 	DirectionalHitReact(ImpactPoint);
 	
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
+	if (HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+
+		);
+	}
 }
 
  void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
@@ -117,6 +135,7 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 
 	 PlayHitReactMontage(Section);
 
+	 /*
 	 UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Red, 5.f);
 
 	 if (GEngine)
@@ -125,6 +144,6 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	 }
 
 	 UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
-	 UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+	 UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);     */
 }
 
