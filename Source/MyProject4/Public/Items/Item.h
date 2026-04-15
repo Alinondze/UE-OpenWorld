@@ -43,7 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	class UNiagaraComponent* EmbersEffect;
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
