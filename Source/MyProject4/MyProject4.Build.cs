@@ -8,7 +8,7 @@ public class MyProject4 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","HairStrandsCore", "GeometryCollectionEngine" , "Niagara"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","HairStrandsCore", "GeometryCollectionEngine" , "Niagara", "UMG"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
