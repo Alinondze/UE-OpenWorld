@@ -29,7 +29,49 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	if (HealthBarWidget)
+	{
+      HealthBarWidget->SetVisibility(false);
+	}
 	
+}
+
+void AEnemy::Die()
+{
+ //TODO: Play Death Montage
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && DeathMontage)
+	{
+		AnimInstance->Montage_Play(DeathMontage);
+
+		const int32 Selection = FMath::RandRange(0, 3);
+		FName SectionName = FName();
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Death1");
+			DeathPose = EDeathPose::EDP_Death1;
+			break;
+		case 1:
+			SectionName = FName("Death2");
+			DeathPose = EDeathPose::EDP_Death2;
+			break;
+		case 2:
+			SectionName = FName("Death3");
+			DeathPose = EDeathPose::EDP_Death3;
+			break;
+		case 3:
+			SectionName = FName("Death4");
+			DeathPose = EDeathPose::EDP_Death4;
+			break;
+		default:
+			break;
+		}
+
+		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(3.f);
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
@@ -48,8 +90,19 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CombatTarget)
+	{
+		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
+		if (DistanceToTarget > CombatRadius)
+		{
+			CombatTarget = nullptr;
+				if (HealthBarWidget)
+				{
+					HealthBarWidget->SetVisibility(false);
+				}
+		}
+	}
 }
-
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -60,9 +113,9 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 
-	UWorld* World = GetWorld();
-	if (World)
-	{
+	//UWorld* World = GetWorld();
+	//if (World)
+	//{
 		//DrawDebugSphere(
 			//World,             // світ
 		//	ImpactPoint,          // центр сфери
@@ -73,10 +126,21 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 		//	5.f               // тривалість
 		//);
 
+	//}
+	 
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetVisibility(true);
 	}
 
-
-	DirectionalHitReact(ImpactPoint);
+	if (Attributes && Attributes->IsAlive())
+	{
+	  DirectionalHitReact(ImpactPoint);
+	}
+	else
+	{
+		Die();
+	}
 	
 	if (HitSound)
 	{
@@ -153,7 +217,7 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
      */
 }
 
- float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigatir, AActor* DamageCause)
+ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCause)
  {
 	 if (Attributes && HealthBarWidget)
 	 {
@@ -161,6 +225,7 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 		 HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
 		 
 	 }
+	 CombatTarget = EventInstigator->GetPawn();
 	 return DamageAmount;
  }
 
