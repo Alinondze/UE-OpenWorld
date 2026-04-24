@@ -4,11 +4,16 @@
 #include "Enemy/Enemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
+#include "AIController.h"
+#include "NavigationPath.h"
+#include "Navigation/PathFollowingComponent.h"
+#include "AITypes.h"
 
 AEnemy::AEnemy()
 {
@@ -23,6 +28,12 @@ AEnemy::AEnemy()
 	Attributes = CreateDefaultSubobject < UAttributeComponent>(TEXT("Attributes"));
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false; 
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
 }
 
 
@@ -34,6 +45,29 @@ void AEnemy::BeginPlay()
       HealthBarWidget->SetVisibility(false);
 	}
 	
+	EnemyController = Cast<AAIController>(GetController());
+	
+	if (EnemyController && PatrolTarget)
+	{
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PatrolTarget);
+		MoveRequest.SetAcceptanceRadius(15.f);
+		FNavPathSharedPtr NavPath;
+		EnemyController->MoveTo(MoveRequest,&NavPath);
+		if (NavPath.IsValid())
+		{
+			
+			const TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
+
+			for (const FNavPathPoint& Point : PathPoints)
+			{
+				const FVector& Location = Point.Location;
+
+				
+				DrawDebugSphere(GetWorld(), Location, 10.f, 12, FColor::Orange, false, 5.f);
+			}
+		}
+	}
 }
 
 void AEnemy::Die()
