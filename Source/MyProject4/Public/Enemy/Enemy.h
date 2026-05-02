@@ -1,22 +1,19 @@
 
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Interfaces/HitInterface.h"
+#include "Characters/BaseCharacter.h"
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
 
-class UAnimMontage;
-class UAttributeComponent;
+
 class UHealthBarComponent;
 class AAIController;
 class UPawnSensingComponent;
 
 UCLASS()
-class MYPROJECT4_API AEnemy : public ACharacter, public IHitInterface
+class MYPROJECT4_API AEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -30,26 +27,13 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigatir, AActor* DamageCause)override;
 	
 private:
-	/*
-	* Components
-	*/
-
-	UPROPERTY(VisibleAnywhere)
-	UAttributeComponent* Attributes;
+	
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
-	/*
-	// Animation Montages
-	*/
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditAnywhere, Category= Sounds)
 	USoundBase* HitSound;
@@ -96,7 +80,7 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	void Die();
+	virtual void Die() override;
 
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
@@ -107,12 +91,6 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn* PawnSeen);
 
-	/*
-	Play montage function
-	*/
-	void PlayHitReactMontage(const FName& SectionName);
-	void DirectionalHitReact(const FVector& ImpactPoint);
-    
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 public:	
