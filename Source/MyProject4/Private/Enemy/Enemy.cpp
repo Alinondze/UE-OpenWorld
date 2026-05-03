@@ -52,15 +52,23 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	if (HealthBarWidget)
 	{
-      HealthBarWidget->SetVisibility(false);
+		HealthBarWidget->SetVisibility(false);
 	}
 	GetCharacterMovement()->MaxWalkSpeed = 58.f;
 	EnemyController = Cast<AAIController>(GetController());
 	MoveToTarget(PatrolTarget);
-	
+
 	if (PawnSensing)
 	{
 		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
+	}
+
+	UWorld* World = GetWorld();
+	if (World && WeaponClass)
+	{
+		AWeapon* DefaultWeapon = World->SpawnActor<AWeapon>(WeaponClass);
+		DefaultWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+		EquippedWeapon = DefaultWeapon;
 	}
 	}
    
@@ -295,5 +303,13 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 	 GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	 MoveToTarget(CombatTarget);
 	 return DamageAmount;
+ }
+
+ void AEnemy::Destroyed()
+ {
+	 if (EquippedWeapon)
+	 {
+		 EquippedWeapon->Destroy();
+	 }
  }
 
