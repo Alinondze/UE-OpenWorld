@@ -44,7 +44,7 @@ public:
     /*
 	Play montage function
 	*/
-	virtual void PlayAttackMontage() override;
+	
 
 	virtual void AttackEnd() override;
 
