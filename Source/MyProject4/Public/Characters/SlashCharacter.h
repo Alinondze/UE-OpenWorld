@@ -1,5 +1,4 @@
 
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -27,9 +26,7 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-	/*
-	Callbacks for input
-	*/
+	/* Callbacks for input */
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Turn(float Value);
@@ -41,35 +38,28 @@ protected:
 	
 
 public:
-    /*
-	Play montage function
-	*/
-	
-
+	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
+    /* Combat */
+	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
-
 	virtual bool CanAttack() override;
-
 	void PlayEquipMontage(const FName& SectionName);
 	bool CanDisarm();
 	bool CanArm();
-
-	UFUNCTION(BlueprintCallable)
 	void Disarm();
+	void Arm();
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToBack();
 
 	UFUNCTION(BlueprintCallable)
-	void Arm();
+	void AttachWeaponToHand();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
+
 private:
 
-
-	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
-
-	UPROPERTY(BlueprintReadWrite,meta= (AllowPrivateAccess="true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied;
-
+	/* Character components */
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 
@@ -87,6 +77,11 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
+
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 public:	
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
