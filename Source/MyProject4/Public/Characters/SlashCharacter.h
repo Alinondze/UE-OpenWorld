@@ -38,7 +38,7 @@ protected:
 	
 
 public:
-	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
     /* Combat */
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
@@ -56,6 +56,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
+
+	UFUNCTION(BlueprintCallable)
+	void HitReactEnd();
 
 private:
 

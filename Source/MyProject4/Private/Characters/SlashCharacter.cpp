@@ -212,6 +212,11 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	 ActionState = EActionState::EAS_Unoccupied;
  }
 
+ void ASlashCharacter::HitReactEnd()
+ {
+	 ActionState = EActionState::EAS_Unoccupied;
+ }
+
  
 
  void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
@@ -226,11 +231,13 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  }
 
- void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
+ void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
  {
-	 Super::GetHit_Implementation(ImpactPoint);
-	 PlayHitSound(ImpactPoint);
-	 SpawnHitParticles(ImpactPoint);
+	 Super::GetHit_Implementation(ImpactPoint,Hitter);
+
+	 SetWeaponCollisionEnabled(ECollisionEnabled::NoColiison);
+	 ActionState = EActionState::EAS_HitReaction;
+
  }
 
  void ASlashCharacter::EquipWeapon(AWeapon* Weapon)
