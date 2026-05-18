@@ -235,7 +235,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
  {
 	 Super::GetHit_Implementation(ImpactPoint,Hitter);
 
-	 SetWeaponCollisionEnabled(ECollisionEnabled::NoColiison);
+	 SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 	 ActionState = EActionState::EAS_HitReaction;
 
  }

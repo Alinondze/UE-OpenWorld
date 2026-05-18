@@ -37,8 +37,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
 
-	UPROPERTY()
-	AActor* CombatTarget;
+	
 
 	UPROPERTY(EditAnywhere)
 	double  CombatRadius = 1000.f;
@@ -141,5 +140,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+	UPROPERTY(BlueprintReadOnly,Category= Combat)
+	AActor* CombatTarget;
 
 };

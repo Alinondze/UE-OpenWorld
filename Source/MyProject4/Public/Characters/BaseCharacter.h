@@ -47,11 +47,8 @@ protected:
 
 	virtual int32 PlayAttackMontage();
 	void  PlayHitReactMontage(const FName& SectionName);
-	
-	
-	
 	virtual int32 PlayDeathMontage();
-	
+	void StopAttackMontage();
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
@@ -63,6 +60,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
+	
 private:
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);
 	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames);

@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 
+
+
 ABaseCharacter::ABaseCharacter()
 {
  	
@@ -14,6 +16,7 @@ ABaseCharacter::ABaseCharacter()
 
 	Attributes = CreateDefaultSubobject < UAttributeComponent>(TEXT("Attributes"));
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	
 }
 
 
@@ -169,6 +172,15 @@ int32 ABaseCharacter::PlayRandomMontageSection(UAnimMontage* Montage, const TArr
 int32 ABaseCharacter::PlayDeathMontage()
 {
 	return PlayRandomMontageSection(DeathMontage,DeathMontageSections);
+}
+
+void ABaseCharacter::StopAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Stop(0.25f, AttackMontage);
+	}
 }
 
 void ABaseCharacter::DisableCapsule()
