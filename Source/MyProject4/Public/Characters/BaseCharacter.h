@@ -50,9 +50,20 @@ protected:
 	virtual int32 PlayDeathMontage();
 	void StopAttackMontage();
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetTranslationWarpTarget();
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetRotationWarpTarget();
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
 
+	UPROPERTY(BlueprintReadOnly, Category = Combat)
+	AActor* CombatTarget;
+
+	UPROPERTY(EditAnywhere, Category= Combat)
+	double WarpTargetDistance = 75.f;
 	/*
 	* Components
 	*/

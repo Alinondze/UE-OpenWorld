@@ -21,7 +21,7 @@ class MYPROJECT4_API ASlashCharacter : public ABaseCharacter
 public:
 	
 	ASlashCharacter();
-
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigatir, AActor* DamageCause)override;
 protected:
 	
 	virtual void BeginPlay() override;

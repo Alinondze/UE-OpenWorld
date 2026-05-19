@@ -141,7 +141,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
-	UPROPERTY(BlueprintReadOnly,Category= Combat)
-	AActor* CombatTarget;
+	
 
 };

@@ -47,6 +47,12 @@ ASlashCharacter::ASlashCharacter()
 	Eyebrows->AttachmentName = FString("head");
 }
 
+float ASlashCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigatir, AActor* DamageCause)
+{
+	HandleDamage(DamageAmount);
+	return DamageAmount;
+}
+
 
 void ASlashCharacter::BeginPlay()
 {
