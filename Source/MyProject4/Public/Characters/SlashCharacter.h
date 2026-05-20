@@ -11,7 +11,7 @@ class UCameraComponent;
 class UGroomComponent;
 class AItem;
 class UAnimMontage;
-
+class USlashOverlay;
 
 UCLASS()
 class MYPROJECT4_API ASlashCharacter : public ABaseCharacter
@@ -22,9 +22,13 @@ public:
 	
 	ASlashCharacter();
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigatir, AActor* DamageCause)override;
+	virtual void Jump()override;
+	
 protected:
 	
 	virtual void BeginPlay() override;
+
+	
 
 	/* Callbacks for input */
 	void MoveForward(float Value);
@@ -61,6 +65,9 @@ public:
 	void HitReactEnd();
 
 private:
+	bool IsUnoccupied();
+	void InitializeSlashOverlay();
+	void SetHUDHealth();
 
 	/* Character components */
 	UPROPERTY(VisibleAnywhere)
@@ -85,6 +92,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	UPROPERTY()
+	USlashOverlay* SlashOverlay;
 
 public:	
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }

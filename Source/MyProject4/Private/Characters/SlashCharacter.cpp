@@ -1,14 +1,15 @@
-
 #include "Characters/SlashCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GroomComponent.h"
+#include "Components/AttributeComponent.h"
 #include"Items/Item.h"
 #include "Animation/AnimMontage.h"
 #include "Items/Weapons/Weapon.h"
-
+#include "HUD/SlashHUD.h"
+#include "HUD/SlashOverlay.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -50,7 +51,31 @@ ASlashCharacter::ASlashCharacter()
 float ASlashCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigatir, AActor* DamageCause)
 {
 	HandleDamage(DamageAmount);
+	SetHUDHealth();
 	return DamageAmount;
+}
+
+void ASlashCharacter::Jump()
+{
+	if (IsUnoccupied())
+	{
+     Super::Jump();
+	}
+	
+}
+
+bool ASlashCharacter::IsUnoccupied()
+{
+	return (ActionState == EActionState::EAS_Unoccupied);
+}
+
+void ASlashCharacter::SetHUDHealth()
+{
+	if (SlashOverlay && Attributes)
+	{
+		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	}
+
 }
 
 
@@ -59,6 +84,28 @@ void ASlashCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	Tags.Add(FName("EngageableTarget"));
+	InitializeSlashOverlay();
+	
+}
+
+void ASlashCharacter::InitializeSlashOverlay()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		ASlashHUD* SlashHUD = Cast<ASlashHUD>(PlayerController->GetHUD());
+		if (SlashHUD)
+		{
+			SlashOverlay = SlashHUD->GetSlashOverlay();
+			if (SlashOverlay && Attributes)
+			{
+				SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+				SlashOverlay->SetStaminaBarPercent(1.f);
+				SlashOverlay->SetGold(0);
+				SlashOverlay->SetSouls(0); 
+			}
+		}
+	}
 }
 
 
@@ -78,7 +125,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
 	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASlashCharacter::MoveRight);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASlashCharacter::Jump);
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASlashCharacter::Attack);
 }
