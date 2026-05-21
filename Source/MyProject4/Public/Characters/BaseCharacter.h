@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Characters/CharacterTypes.h"
 #include "BaseCharacter.generated.h"
 
 class AWeapon;
@@ -19,7 +20,7 @@ public:
 	
 	ABaseCharacter();
     virtual void Tick(float DeltaTime) override;
-
+	FORCEINLINE TEnumAsByte <EDeathPose> GetDeathPose() const { return DeathPose; }
 	
 protected:
 
@@ -34,6 +35,7 @@ protected:
     void DisableCapsule();
     virtual bool CanAttack();
 	bool IsAlive();
+	void DisableMeshCollision();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
@@ -71,7 +73,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<EDeathPose> DeathPose;
+
 private:
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);
 	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames);

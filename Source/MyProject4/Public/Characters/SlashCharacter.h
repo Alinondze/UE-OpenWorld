@@ -52,6 +52,7 @@ public:
 	bool CanArm();
 	void Disarm();
 	void Arm();
+	virtual void Die()override;
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();
 
@@ -101,7 +102,7 @@ public:
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 	
 
 	
