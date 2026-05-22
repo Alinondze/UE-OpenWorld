@@ -1,10 +1,10 @@
 
-
-
 #include "Items/Item.h"
 #include "Components/SphereComponent.h"
-#include "Characters/SlashCharacter.h"
+#include "Interfaces/PickUpInterface.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 AItem::AItem()
 {
@@ -19,8 +19,8 @@ AItem::AItem()
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
 
-	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
-	EmbersEffect->SetupAttachment(GetRootComponent());
+	ItemEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
+	ItemEffect->SetupAttachment(GetRootComponent());
 }
 
 
@@ -37,12 +37,12 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* Oth
 {
 	
 		
-		ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	IPickUpInterface* PickUpInterface = Cast<IPickUpInterface>(OtherActor);
 		
-		if (SlashCharacter)
+		if (PickUpInterface)
 		{
 			
-			SlashCharacter->SetOverlappingItem(this); 
+			PickUpInterface->SetOverlappingItem(this);
 		}
 	
 
@@ -51,10 +51,12 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* Oth
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
-	if (SlashCharacter)
+	IPickUpInterface* PickUpInterface = Cast<IPickUpInterface>(OtherActor);
+
+	if (PickUpInterface)
 	{
-		SlashCharacter->SetOverlappingItem(nullptr);
+
+		PickUpInterface->SetOverlappingItem(nullptr);
 	}
 	
 }
@@ -68,6 +70,30 @@ void AItem::HandleIdleMovement(float DeltaTime)
 	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
 }
 
+
+void AItem::SpawnPickupSystem()
+{
+	if (PickupEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			PickupEffect,
+			GetActorLocation()
+		);
+	}
+}
+
+void AItem::SpawnPickupSound()
+{
+	if (PickupSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(
+			this,
+			PickupSound,
+			GetActorLocation()
+		);
+	}
+}
 
 void AItem::Tick(float DeltaTime)
 {

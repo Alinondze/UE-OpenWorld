@@ -7,7 +7,7 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
-
+class UNiagaraComponent;
 
 enum class EItemState : uint8
 {
@@ -45,7 +45,14 @@ protected:
 	USphereComponent* Sphere;
 
 	UPROPERTY(VisibleAnywhere)
-	class UNiagaraComponent* EmbersEffect;
+	UNiagaraComponent* ItemEffect;
+
+	virtual void SpawnPickupSystem();
+	 virtual void SpawnPickupSound();
+
+
+	 UPROPERTY(EditAnywhere)
+	 USoundBase* PickupSound;
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
@@ -56,6 +63,7 @@ private:
 	float Amplitude=0.5f;
 	float TimeConstant = 5.f;
 	
-	
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* PickupEffect;
 
 };
