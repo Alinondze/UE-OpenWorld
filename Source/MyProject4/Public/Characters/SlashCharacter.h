@@ -12,6 +12,7 @@ class UCameraComponent;
 class UGroomComponent;
 class AItem;
 class ASoul;
+class ATreasure;
 class UAnimMontage;
 class USlashOverlay;
 
@@ -23,10 +24,12 @@ class MYPROJECT4_API ASlashCharacter : public ABaseCharacter,public IPickUpInter
 public:
 	
 	ASlashCharacter();
+	virtual void Tick(float DeltaTime)override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigatir, AActor* DamageCause)override;
 	virtual void Jump()override;
 	virtual void SetOverlappingItem( AItem* Item)override;
 	virtual void AddSouls(ASoul* Soul)override;
+	virtual void AddGold(ATreasure* Treasure)override;
 protected:
 	
 	virtual void BeginPlay() override;
@@ -40,15 +43,18 @@ protected:
 	void LookUp(float Value);
 	void EKeyPressed();
 	virtual void Attack() override;
+	void Dodge();
 
 
 	
 
 public:
+
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
     /* Combat */
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
+	virtual void DodgeEnd() override;
 	virtual bool CanAttack() override;
 	void PlayEquipMontage(const FName& SectionName);
 	bool CanDisarm();
@@ -56,6 +62,8 @@ public:
 	void Disarm();
 	void Arm();
 	virtual void Die()override;
+	bool IsOccupied();
+	bool HasEnoughStamina();
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();
 
@@ -72,7 +80,7 @@ private:
 	bool IsUnoccupied();
 	void InitializeSlashOverlay();
 	void SetHUDHealth();
-
+	
 	/* Character components */
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
@@ -103,7 +111,7 @@ private:
 public:	
 	
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
-	virtual void Tick(float DeltaTime) override;
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 	

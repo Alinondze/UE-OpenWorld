@@ -7,7 +7,8 @@
 void IPickUpInterface::AddSouls(ASoul* Soul)
 {
 }
-void SetOverlappingItem(class AItem* Item)
+
+void IPickUpInterface::AddGold( ATreasure* Treasure)
 {
 
- }
+}

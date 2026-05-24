@@ -10,6 +10,8 @@
 #include "Items/Weapons/Weapon.h"
 #include "HUD/SlashHUD.h"
 #include "HUD/SlashOverlay.h"
+#include "Items/Soul.h"
+#include "Items/Treasure.h"
 
 
 ASlashCharacter::ASlashCharacter()
@@ -72,7 +74,20 @@ void ASlashCharacter::SetOverlappingItem(AItem* Item)
 
 void ASlashCharacter::AddSouls(ASoul* Soul)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ASlashCharacter::AddSouls"));
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->AddSouls(Soul->GetSouls());
+		SlashOverlay->SetSouls(Attributes->GetSouls());
+	}
+}
+
+void ASlashCharacter::AddGold(ATreasure* Treasure)
+{
+	if (Attributes)
+	{
+		Attributes->AddGold(Treasure->GetGold());
+		SlashOverlay->SetGold(Attributes->GetGold());
+	}
 }
 
 
@@ -89,6 +104,16 @@ void ASlashCharacter::SetHUDHealth()
 		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
 	}
 
+}
+
+bool ASlashCharacter::IsOccupied()
+{
+	return ActionState != EActionState::EAS_Unoccupied;
+}
+
+bool ASlashCharacter::HasEnoughStamina()
+{
+	return Attributes && Attributes->GetStamina() > Attributes ->GetDodgeCost();
 }
 
 
@@ -118,13 +143,18 @@ void ASlashCharacter::InitializeSlashOverlay()
 				SlashOverlay->SetSouls(0); 
 			}
 		}
-	}
+	}
+
 }
 
 
 void ASlashCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	if (Attributes)
+	{
+		Attributes->RegenStamina(DeltaTime);
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 
 }
 
@@ -141,6 +171,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASlashCharacter::Jump);
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ASlashCharacter::Attack);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &ASlashCharacter::Dodge);
 }
 
 
@@ -218,6 +249,20 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		
 	 }
  }
+
+ void ASlashCharacter::Dodge()
+ {
+	 if (IsOccupied() || !HasEnoughStamina()) return;
+	 PlayDodgeMontage();
+	 ActionState = EActionState::EAS_Dodge;
+	 if (Attributes && SlashOverlay)
+	 {
+		 Attributes->UseStamina(Attributes->GetDodgeCost());
+		 SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	 }
+	 
+ }
+ 
 
  bool ASlashCharacter::CanAttack()
  {
@@ -329,6 +374,13 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
  void ASlashCharacter::AttackEnd()
  {
+	 ActionState = EActionState::EAS_Unoccupied;
+ }
+
+ void ASlashCharacter::DodgeEnd()
+ {
+	 Super::DodgeEnd();
+
 	 ActionState = EActionState::EAS_Unoccupied;
  }
 

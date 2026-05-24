@@ -2,17 +2,20 @@
 
 
 #include "Items/Treasure.h"
-#include "Characters/SlashCharacter.h"
+#include "Interfaces/PickUpInterface.h"
 
 
 void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	IPickUpInterface* PickUpInterface = Cast<IPickUpInterface>(OtherActor);
 
-	if (SlashCharacter)
+	if (PickUpInterface)
 	{
+		PickUpInterface->AddGold(this);
+
 		SpawnPickupSound();
 		Destroy();
 	}
+	
 
 }
