@@ -223,6 +223,10 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	 AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
 	 if (OverlappingWeapon)
 	 {
+		 if (EquippedWeapon)
+		 {
+			 EquippedWeapon->Destroy();
+		 }
 		 EquipWeapon(OverlappingWeapon);
 	 }
 	 else
@@ -300,9 +304,9 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	 ActionState = EActionState::EAS_EquippingWeapon;
  }
 
- void ASlashCharacter::Die()
+ void ASlashCharacter::Die_Implementation()
  {
-	 Super::Die();
+	 Super::Die_Implementation();
 	 ActionState = EActionState::EAS_Dead; 
 	 DisableMeshCollision();
  }

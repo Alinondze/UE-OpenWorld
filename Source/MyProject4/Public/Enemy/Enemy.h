@@ -37,12 +37,14 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Combat)
 	double  CombatRadius = 1000.f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Combat)
 	double  AttackRadius = 150.f;
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	double AcceptanceRadius = 50.f;
 	/*
 	* Navigation
 	*/
@@ -120,7 +122,7 @@ protected:
 	
 
 	/* ABaseCharacter*/
-	virtual void Die() override;
+	virtual void Die_Implementation() override;
 	void SpawnSoul();
     virtual void Attack() override;
 	virtual bool CanAttack() override;

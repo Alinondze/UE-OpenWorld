@@ -11,19 +11,19 @@
 
 ABaseCharacter::ABaseCharacter()
 {
- 	
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	Attributes = CreateDefaultSubobject < UAttributeComponent>(TEXT("Attributes"));
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-	
+
 }
 
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ABaseCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
@@ -59,8 +59,12 @@ void ABaseCharacter::AttackEnd()
 
 }
 
-void ABaseCharacter::Die()
+void ABaseCharacter::Die_Implementation()
+
 {
+	DisableCapsule();
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	Tags.Add(FName("Dead"));
 	PlayDeathMontage();
 }
@@ -147,7 +151,7 @@ void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint)
 
 void ABaseCharacter::HandleDamage(float DamageAmount)
 {
-	if (Attributes )
+	if (Attributes)
 	{
 		Attributes->ReceiveDamage(DamageAmount);
 	}
@@ -200,8 +204,8 @@ void ABaseCharacter::StopAttackMontage()
 
 FVector ABaseCharacter::GetTranslationWarpTarget()
 {
-	if(CombatTarget == nullptr) return FVector();
-	
+	if (CombatTarget == nullptr) return FVector();
+
 	const FVector CombatTargetLocation = CombatTarget->GetActorLocation();
 	const FVector Location = GetActorLocation();
 
@@ -227,7 +231,7 @@ void ABaseCharacter::DisableCapsule()
 
 int32 ABaseCharacter::PlayAttackMontage()
 {
-	return PlayRandomMontageSection(AttackMontage,AttackMontageSections);
+	return PlayRandomMontageSection(AttackMontage, AttackMontageSections);
 }
 
 void ABaseCharacter::Tick(float DeltaTime)
@@ -258,5 +262,3 @@ void ABaseCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type Collision
 		EquippedWeapon->IgnoreActors.Empty();
 	}
 }
-
-

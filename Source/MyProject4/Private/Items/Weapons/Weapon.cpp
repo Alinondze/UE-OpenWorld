@@ -49,7 +49,8 @@ void AWeapon::DeactivateEmbers()
 	if (ItemEffect)
 	{
 		ItemEffect->Deactivate();
-	}
+	}
+
 }
 
 void AWeapon::DisableSphereCollision()
@@ -70,7 +71,8 @@ void AWeapon::PlayEquipSound()
 			EquipSound,
 			GetActorLocation()
 		);
-	}
+	}
+
 }
 
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent,const  FName& InSocketName)
@@ -79,12 +81,10 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent,const  FName& InSocke
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 }
 
-
-
 void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponet, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (ActorIsSameType(OtherActor)) return;
-	
+
 
 	FHitResult BoxHit;
 	BoxTrace(BoxHit);
@@ -131,7 +131,7 @@ void AWeapon::BoxTrace(FHitResult& BoxHit)
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
-
+	ActorsToIgnore.Add(GetOwner());
 	for (AActor* Actor : IgnoreActors)
 	{
 		ActorsToIgnore.AddUnique(Actor);
